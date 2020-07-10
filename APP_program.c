@@ -67,6 +67,9 @@ void APP_vidInit(void) {
 
 static void APP_vidRestartSystem(void) { /*Cancel pin configuration*/
   
+    u8FoodState = 0;
+    u8DoorState = 0;
+    
     u8HeatState = APP_HEAT_OFF;
     
     SERVICES_vidExecWhenPressed(SERVICES_KEY_DEL, APP_vidRestartSystem);
