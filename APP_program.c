@@ -120,7 +120,7 @@ void APP_vidCountOVF(void) {
     if (u16OVFCount == 3812) {
         u16OVFCount = 0;
         u16Seconds--;
-        LCD_vidGoToXY(LCD_XPOS10, LCD_YPOS0);
+        LCD_vidGoToXY(LCD_XPOS12, LCD_YPOS0);
         LCD_vidWriteNumber(u16Seconds);
         if (u16Seconds == 0) {
                 u8HeatState = APP_HEAT_OFF;
@@ -167,10 +167,11 @@ void APP_vidStartHeating(void) {
     LCD_vidSendCommand(LCD_CLEAR_SCREEN);
     LCD_vidWriteString("Heating...");
 
+    LCD_vidGoToXY(LCD_XPOS12,LCD_YPOS0);
     /*Writing the first second*/
     LCD_vidWriteNumber(u16Seconds);
 
-    LCD_vidGoToXY(LCD_YPOS0, LCD_YPOS2);
+    LCD_vidGoToXY(LCD_XPOS0, LCD_YPOS2);
     LCD_vidWriteString("RB4: Open door");
 
     LCD_vidGoToXY(LCD_XPOS0, LCD_YPOS3);
