@@ -42,7 +42,7 @@ void APP_vidInit(void) {
     DIO_vidSetPinDirection(APP_CANCEL_PORT, APP_CANCEL_PIN, DIO_INPUT);
     DIO_vidSetPinValue(APP_CANCEL_PORT, APP_CANCEL_PIN, STD_HIGH);
 
-     /*Motor configuration*/
+    /*Motor configuration*/
     DIO_vidSetPinDirection(APP_MOTOR_PORT, APP_MOTOR_PIN, DIO_OUTPUT);
 
     /*Configuring pins of weight pins*/
@@ -51,27 +51,27 @@ void APP_vidInit(void) {
     DIO_vidControlPullUp(DIO_PULLUP);
     INTERRUPTS_vidEnablePeripheralInterrupt();
     INTERRUPTS_vidEnableGlobalInterrupt();
-    
+
 
     /*Timer0 configuration*/
     TIMER0_vidInit(TIMER0_MODE_TIMER, TIMER0_PS_2);
-    INTERRUPTS_vidPutISR(INTERRUPTS_TIMER0_OVF,APP_vidCountOVF);
+    INTERRUPTS_vidPutISR(INTERRUPTS_TIMER0_OVF, APP_vidCountOVF);
 
     LCD_vidInit();
     KEYPAD_vidInit();
-    
+
     APP_vidRestartSystem();
 
-   
+
 }
 
 static void APP_vidRestartSystem(void) { /*Cancel pin configuration*/
-  
+
     u8FoodState = 0;
     u8DoorState = 0;
-    
+
     u8HeatState = APP_HEAT_OFF;
-    
+
     SERVICES_vidExecWhenPressed(SERVICES_KEY_DEL, APP_vidRestartSystem);
     /*Setting variables used to track user input cursor*/
     u8CurrXPos = 0;
@@ -123,7 +123,7 @@ void APP_vidCountOVF(void) {
         LCD_vidGoToXY(LCD_XPOS12, LCD_YPOS0);
         LCD_vidWriteNumber(u16Seconds);
         if (u16Seconds == 0) {
-                u8HeatState = APP_HEAT_OFF;
+            u8HeatState = APP_HEAT_OFF;
 
             /*Turn-off LED*/
             DIO_vidSetPinValue(DIO_PORTC, DIO_PIN7, STD_LOW);
@@ -145,7 +145,7 @@ void APP_vidTestText(void) {
         LCD_vidGoToXY(LCD_XPOS0, LCD_YPOS1);
         __delay_ms(1000);
         APP_vidRestartSystem();
-    }        /*In case of user input*/
+    }/*In case of user input*/
     else {
         /*Variable will be put elsewhere*/
         LCD_vidGoToXY(LCD_XPOS12, LCD_YPOS2);
@@ -167,7 +167,7 @@ void APP_vidStartHeating(void) {
     LCD_vidSendCommand(LCD_CLEAR_SCREEN);
     LCD_vidWriteString("Heating...");
 
-    LCD_vidGoToXY(LCD_XPOS12,LCD_YPOS0);
+    LCD_vidGoToXY(LCD_XPOS12, LCD_YPOS0);
     /*Writing the first second*/
     LCD_vidWriteNumber(u16Seconds);
 
@@ -182,7 +182,7 @@ void APP_vidStartHeating(void) {
 
     /*Start timer*/
     INTERRUPTS_vidEnableInterrupt(INTERRUPTS_TIMER0_OVF);
-    INTERRUPTS_vidPutISR(INTERRUPTS_TIMER0_OVF,APP_vidCountOVF);
+    INTERRUPTS_vidPutISR(INTERRUPTS_TIMER0_OVF, APP_vidCountOVF);
     INTERRUPTS_vidEnablePeripheralInterrupt();
 
 }
@@ -211,8 +211,7 @@ void APP_vidCheckWhileHeating(void) {
 
 }
 
-u8 APP_u8CheckToStart(void) 
-{
+u8 APP_u8CheckToStart(void) {
     if (DIO_u8GetPinValue(APP_WEIGHT_PORT, APP_WEIGHT_PIN) == 1) {
         LCD_vidGoToXY(LCD_XPOS4, LCD_YPOS2);
         LCD_vidWriteString("Food");
@@ -233,13 +232,12 @@ u8 APP_u8CheckToStart(void)
             }
         }
     }
-    
+
     /*Check cancel button*/
-    if (DIO_u8GetPinValue(APP_CANCEL_PORT,APP_CANCEL_PIN) == APP_CANCEL_PRESSED)
-    {
+    if (DIO_u8GetPinValue(APP_CANCEL_PORT, APP_CANCEL_PIN) == APP_CANCEL_PRESSED) {
         APP_vidRestartSystem();
     }
-    
+
     if (u8FoodState && u8DoorState) {
         return 1;
     }
@@ -261,18 +259,21 @@ void APP_vidControlHeating(u8 u8Command) {
 
 }
 
-u8 APP_u8CheckDoor(void)
-{
-  
-    if (DIO_u8GetPinValue(APP_DOOR_PORT,APP_DOOR_PIN) == 0)
-    {
-        if (u8DoorState == 0)
-        {
+u8 APP_u8CheckDoor(void) {
+
+    if (DIO_u8GetPinValue(APP_DOOR_PORT, APP_DOOR_PIN) == 0) {
+        if (u8DoorState == 0) {
             LCD_vidDeleteFrom(LCD_XPOS0, LCD_YPOS2, 4);
             u8DoorState = 1;
             return 1;
+        } else {
+            LCD_vidGoToXY(LCD_XPOS0, LCD_YPOS2);
+            LCD_vidWriteString("Door");
+            u8DoorState = 0;
+            return 0;
         }
-        else {
+    } else {
+        if (u8DoorState == 0) {
             LCD_vidGoToXY(LCD_XPOS0, LCD_YPOS2);
             LCD_vidWriteString("Door");
             u8DoorState = 0;
@@ -281,34 +282,32 @@ u8 APP_u8CheckDoor(void)
     }
 }
 
-u8 APP_u8CheckFood(void)
-{
-    if (DIO_u8GetPinValue(APP_WEIGHT_PORT,APP_WEIGHT_PIN) == 0)
-    {
-        if (u8FoodState == 0)
-        {
-        LCD_vidDeleteFrom(LCD_XPOS5, LCD_YPOS2, 4);
-        u8FoodState = 1;
-        return 1;
+u8 APP_u8CheckFood(void) {
+    if (DIO_u8GetPinValue(APP_WEIGHT_PORT, APP_WEIGHT_PIN) == 0) {
+        if (u8FoodState == 0) {
+            LCD_vidDeleteFrom(LCD_XPOS5, LCD_YPOS2, 4);
+            u8FoodState = 1;
+            return 1;
+        } else {
+            LCD_vidGoToXY(LCD_XPOS5, LCD_YPOS2);
+            LCD_vidWriteString("Food");
+            u8FoodState = 0;
+            return 0;
         }
-        else
-        {
-        LCD_vidGoToXY(LCD_XPOS5, LCD_YPOS2);
-        LCD_vidWriteString("Food");
-        u8FoodState = 0;
-        return 0;
+    } else {
+        if (u8FoodState == 0) {
+            LCD_vidGoToXY(LCD_XPOS5, LCD_YPOS2);
+            LCD_vidWriteString("Food");
+            u8FoodState = 0;
+            return 0;
         }
     }
 }
 
-u8 APP_u8CheckStart(void)
-{
-    if (DIO_u8GetPinValue(APP_START_PORT,APP_START_PIN) == APP_START_PRESSED)
-    {
+u8 APP_u8CheckStart(void) {
+    if (DIO_u8GetPinValue(APP_START_PORT, APP_START_PIN) == APP_START_PRESSED) {
         return 1;
-    }
-    else
-    {
+    } else {
         return 0;
     }
 }

@@ -34,6 +34,8 @@ void main(void)
         }
         while (u8HeatState == APP_HEAT_OFF && u8TimeEntered == 1)
         {
+            APP_u8CheckFood();
+            APP_u8CheckDoor();
             u8Condition = 0;
             u8Condition |= APP_u8CheckFood();
             if (u8Condition == 1)
