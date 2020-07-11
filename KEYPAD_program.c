@@ -44,7 +44,8 @@ u8 KEYPAD_u8GetKey(void) {
 		for(j =0; j<4;j++)
 		{ 
             /*to avoid bouncing of keypad */
-            __delay_us(50) ;
+            /*Changed from 50 to 100us, seems to correct behavior*/
+            __delay_us(100) ;
            
 			if(!(PORTD & (1<<j)))//check if key is pressed
 			{

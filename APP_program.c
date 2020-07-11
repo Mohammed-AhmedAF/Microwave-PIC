@@ -263,29 +263,41 @@ void APP_vidControlHeating(u8 u8Command) {
 
 u8 APP_u8CheckDoor(void)
 {
-    if (DIO_u8GetPinValue(APP_DOOR_PORT,APP_DOOR_PIN) == APP_DOOR_CLOSED)
+  
+    if (DIO_u8GetPinValue(APP_DOOR_PORT,APP_DOOR_PIN) == 0)
     {
-        u8DoorState = 1;
-        return 1;
-    }
-    else
-    {
-        u8DoorState = 0;
-        return 0;
+        if (u8DoorState == 0)
+        {
+            LCD_vidDeleteFrom(LCD_XPOS0, LCD_YPOS2, 4);
+            u8DoorState = 1;
+            return 1;
+        }
+        else {
+            LCD_vidGoToXY(LCD_XPOS0, LCD_YPOS2);
+            LCD_vidWriteString("Door");
+            u8DoorState = 0;
+            return 0;
+        }
     }
 }
 
 u8 APP_u8CheckFood(void)
 {
-    if (DIO_u8GetPinValue(APP_WEIGHT_PORT,APP_WEIGHT_PIN) == APP_FOOD_IN)
+    if (DIO_u8GetPinValue(APP_WEIGHT_PORT,APP_WEIGHT_PIN) == 0)
     {
+        if (u8FoodState == 0)
+        {
+        LCD_vidDeleteFrom(LCD_XPOS5, LCD_YPOS2, 4);
         u8FoodState = 1;
         return 1;
-    }
-    else
-    {
+        }
+        else
+        {
+        LCD_vidGoToXY(LCD_XPOS5, LCD_YPOS2);
+        LCD_vidWriteString("Food");
         u8FoodState = 0;
         return 0;
+        }
     }
 }
 

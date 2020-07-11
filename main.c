@@ -34,18 +34,20 @@ void main(void)
         }
         while (u8HeatState == APP_HEAT_OFF && u8TimeEntered == 1)
         {
-            
-            if (DIO_u8GetPinValue(APP_START_PORT,APP_START_PIN) == APP_START_PRESSED)
+            u8Condition = 0;
+            u8Condition |= APP_u8CheckFood();
+            if (u8Condition == 1)
             {
-                do{
-                u8Condition = APP_u8CheckToStart();
-                }while(u8Condition == 0);
-                APP_vidStartHeating();
-                break; 
-             }
-            else {
-                APP_u8CheckToStart();
+                u8Condition |= APP_u8CheckDoor()<<1;
+                if (u8Condition == 3)
+                {
+                    u8Condition |= APP_u8CheckStart()<<2;
+                }
             }
+            if (u8Condition == 0x07)
+            {   
+                APP_vidStartHeating();
+            }  
         }
         APP_vidCheckWhileHeating();
         
