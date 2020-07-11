@@ -18,6 +18,9 @@ void APP_vidChangeKeyboardState(void);
 void APP_vidCheckWhileHeating(void);
 u8 APP_u8CheckToStart(void);
 void APP_vidControlHeating(u8);
+u8 APP_u8CheckFood(void);
+u8 APP_u8CheckDoor(void);
+u8 APP_u8CheckStart(void);
 
 /*Macros for conditions*/
 #define APP_FOOD_IN 0

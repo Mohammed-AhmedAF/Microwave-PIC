@@ -260,3 +260,43 @@ void APP_vidControlHeating(u8 u8Command) {
     }
 
 }
+
+u8 APP_u8CheckDoor(void)
+{
+    if (DIO_u8GetPinValue(APP_DOOR_PORT,APP_DOOR_PIN) == APP_DOOR_CLOSED)
+    {
+        u8DoorState = 1;
+        return 1;
+    }
+    else
+    {
+        u8DoorState = 0;
+        return 0;
+    }
+}
+
+u8 APP_u8CheckFood(void)
+{
+    if (DIO_u8GetPinValue(APP_WEIGHT_PORT,APP_WEIGHT_PIN) == APP_FOOD_IN)
+    {
+        u8FoodState = 1;
+        return 1;
+    }
+    else
+    {
+        u8FoodState = 0;
+        return 0;
+    }
+}
+
+u8 APP_u8CheckStart(void)
+{
+    if (DIO_u8GetPinValue(APP_START_PORT,APP_START_PIN) == APP_START_PRESSED)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
